@@ -17,7 +17,7 @@ public class UserConnectionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "connection_id")
-    public long connectionId;
+    private long connectionId;
 
     @ManyToOne
     @JoinColumn(name = "user1_id", nullable = false)

@@ -17,7 +17,7 @@ public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    public long transactionId;
+    private long transactionId;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
@@ -28,8 +28,8 @@ public class TransactionEntity {
     private UserEntity receiver;
 
     @Column(name = "description")
-    public String description;
+    private String description;
 
-    @Column(name = "amount")
-    public BigDecimal amount;
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
 }

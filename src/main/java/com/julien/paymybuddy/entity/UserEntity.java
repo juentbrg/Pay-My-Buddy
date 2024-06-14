@@ -1,6 +1,9 @@
 package com.julien.paymybuddy.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Set;
@@ -17,16 +20,20 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    public long userId;
+    private long userId;
 
-    @Column(name = "username")
-    public String username;
+    @NotEmpty(message = "Username cannot be empty")
+    @Column(nullable = false, name = "username")
+    private String username;
 
-    @Column(name = "email")
-    public String email;
+    @NotEmpty(message = "Username cannot be empty")
+    @Email(message = "Email should be valid")
+    @Column(nullable = false, name = "email")
+    private String email;
 
-    @Column(name = "password")
-    public String password;
+    @NotEmpty(message = "Password cannot be empty")
+    @Column(nullable = false, name = "password")
+    private String password;
 
     @OneToMany(mappedBy = "sender")
     private Set<TransactionEntity> sentTransactions;

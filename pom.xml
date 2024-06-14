@@ -21,6 +21,9 @@
 		<surefire.version>3.2.5</surefire.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 		<log4j.version>2.22.1</log4j.version> <!-- https://logging.apache.org/log4j/2.x/maven-artifacts.html -->
 		<surefire.report.version>3.0.0-M1</surefire.report.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
+		<org.json.version>20240303</org.json.version> <!-- https://mvnrepository.com/artifact/org.json/json -->
+		<jakarta.validation.version>3.1.0</jakarta.validation.version> <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
+		<hibernate.validator>8.0.1.Final</hibernate.validator> <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -78,6 +81,22 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${org.json.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>${jakarta.validation.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
