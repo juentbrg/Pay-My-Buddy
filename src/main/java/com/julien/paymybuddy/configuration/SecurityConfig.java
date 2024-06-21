@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -23,25 +25,15 @@ public class SecurityConfig{
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/user/sign-up").permitAll()
+                .requestMatchers(
+                        new AntPathRequestMatcher("/api/user/sign-up"),
+                        new AntPathRequestMatcher("/api/auth/**")
+                ).permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginProcessingUrl("/api/user/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler((request, response, authentication) -> {
-                    response.setStatus(HttpStatus.OK.value());
-                })
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                })
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/api/user/logout")
-                .permitAll()
-            )
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .logout(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
@@ -58,6 +50,11 @@ public class SecurityConfig{
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
     @Bean

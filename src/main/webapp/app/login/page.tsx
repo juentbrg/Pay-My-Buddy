@@ -11,35 +11,15 @@ const Auth = () => {
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // try {
-        //     const response = await axios.post("http://localhost:8080/api/user/login", {
-        //         email,
-        //         password,
-        //     }, {
-        //         withCredentials: true
-        //     });
-        //     await router.push("/");
-        // } catch (error: any) {
-        //     console.error(error);
-        // }
-
-        const params = new URLSearchParams();
-        params.append('email', email);
-        params.append('password', password);
-
         try {
-            const response = await axios.post(
-                "http://localhost:8080/api/user/login",
-                params,
-                {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    withCredentials: true
-                }
-            );
+            const response = await axios.post("http://localhost:8080/api/auth/login", {
+                email,
+                password,
+            }, {
+                withCredentials: true
+            });
             await router.push("/");
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
         }
     };
