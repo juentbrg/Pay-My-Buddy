@@ -115,7 +115,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void signUpUserOkTest() {
+    public void registerUserOkTest() {
         UserEntity user = new UserEntity();
         user.setUserId(1);
         user.setUsername("test");
@@ -127,14 +127,14 @@ public class UserControllerTest {
 
         when(userService.createUser(securedPostUserDTO)).thenReturn(securedGetUserDTO);
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.signUp(securedPostUserDTO);
+        ResponseEntity<SecuredGetUserDTO> result = userController.register(securedPostUserDTO);
 
         assertNotNull(result.getBody());
         assertEquals(user.getUsername(), result.getBody().getUsername());
     }
 
     @Test
-    public void signUpUserWithUserAlreadyExistTest() {
+    public void registerUserWithUserAlreadyExistTest() {
         SecuredPostUserDTO user = new SecuredPostUserDTO();
         user.setUsername("test");
         user.setEmail("test@test.com");
@@ -142,14 +142,14 @@ public class UserControllerTest {
 
         when(userService.createUser(user)).thenThrow(new UserAlreadyExistsException("Email already taken."));
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.signUp(user);
+        ResponseEntity<SecuredGetUserDTO> result = userController.register(user);
 
         assertNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.CONFLICT);
     }
 
     @Test
-    public void signUpUserWithUnknownErrorTest() {
+    public void registerUserWithUnknownErrorTest() {
         SecuredPostUserDTO user = new SecuredPostUserDTO();
         user.setUsername("test");
         user.setEmail("test@test.com");
@@ -157,7 +157,7 @@ public class UserControllerTest {
 
         when(userService.createUser(user)).thenThrow(new RuntimeException());
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.signUp(user);
+        ResponseEntity<SecuredGetUserDTO> result = userController.register(user);
 
         assertNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -58,8 +58,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<SecuredGetUserDTO> signUp(@Valid @RequestBody SecuredPostUserDTO securedPostUserDTO) {
+    @PostMapping("/register")
+    public ResponseEntity<SecuredGetUserDTO> register(@Valid @RequestBody SecuredPostUserDTO securedPostUserDTO) {
         try {
             SecuredGetUserDTO user = userService.createUser(securedPostUserDTO);
             logger.info("Successfully created new user.");

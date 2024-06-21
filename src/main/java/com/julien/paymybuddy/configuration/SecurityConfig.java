@@ -26,7 +26,7 @@ public class SecurityConfig{
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers(
-                        new AntPathRequestMatcher("/api/user/sign-up"),
+                        new AntPathRequestMatcher("/api/user/register"),
                         new AntPathRequestMatcher("/api/auth/**")
                 ).permitAll()
                 .anyRequest().authenticated()
