@@ -2,12 +2,16 @@
 
 import withAuth from "../components/withAuth";
 import React from "react";
+import Navigation from "../components/Navigation";
 
 const Home = () => {
   return (
-    <main>
-      <h1>Home</h1>
-    </main>
+    <>
+        <Navigation />
+        <main>
+          <h1>Home</h1>
+        </main>
+    </>
   );
 }
 
