@@ -60,7 +60,7 @@ const Register = () => {
                         onChange={(e => setPassword(e.target.value))}
                     />
                     <p className={"mt-8"}>Déjà un compte ? <Link className={"text-[#207FEE] underline"} href={"/login"}>Se connecter</Link></p>
-                    <button className={"w-[205px] h-[64px] bg-[#207FEE] rounded-lg text-white text-lg font-bold mt-8"}
+                    <button className={"w-[205px] h-[64px] bg-[#207FEE] rounded-lg text-white text-lg font-bold mt-8 transition-bg duration-200 ease-in-out hover:bg-[#4192f1]"}
                             type={"submit"}>S'inscrire
                     </button>
                 </form>

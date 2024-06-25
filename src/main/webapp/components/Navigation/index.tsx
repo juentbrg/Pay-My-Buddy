@@ -22,7 +22,7 @@ const Navigation = () => {
     }
 
     return (
-        <nav className={"flex flex-row items-center justify-between h-[164px] p-20 text-[20px] font-[500]"}>
+        <nav className={"flex flex-row items-center justify-between h-[164px] pt-20 pb-20 pl-15 pr-15 text-[20px] font-[500]"}>
             <h1>Pay My Buddy</h1>
             <ul className="flex flex-row">
                 <li className={`mr-10 transition-colors duration-300 ease-in-out hover:text-[#207FEE] ${pathname === '/' ? 'text-[#207FEE]' : ''}`}>

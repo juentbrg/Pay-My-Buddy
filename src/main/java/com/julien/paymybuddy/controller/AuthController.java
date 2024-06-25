@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -40,10 +41,11 @@ public class AuthController {
                 logger.info("User " + user.getEmail() + " logged in. Session ID: " + session.getId());
                 return ResponseEntity.ok().body(new JSONObject().put("message", "User successfully logged in"));
             } else {
-                return ResponseEntity.status(401).body("Invalid username or password");
+                return ResponseEntity.status(401).body(new JSONObject().put("message", "Invalid password."));
             }
+        } else {
+            return ResponseEntity.status(401).body(new JSONObject().put("message", "Unrecognized email."));
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/logout")

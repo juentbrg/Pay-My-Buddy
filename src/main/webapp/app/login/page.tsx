@@ -51,7 +51,7 @@ const Auth = () => {
                         onChange={(e => setPassword(e.target.value))}
                     />
                     <p className={"mt-14"}>Pas de compte ? <Link className={"text-[#207FEE] underline"} href={"/register"}>en créer un</Link></p>
-                    <button className={"w-[205px] h-[64px] bg-[#207FEE] rounded-lg text-white text-lg font-bold mt-14"}
+                    <button className={"w-[205px] h-[64px] bg-[#207FEE] rounded-lg text-white text-lg font-bold mt-14 transition-bg duration-200 ease-in-out hover:bg-[#4192f1]"}
                             type={"submit"}>Se conneter
                     </button>
                 </form>
