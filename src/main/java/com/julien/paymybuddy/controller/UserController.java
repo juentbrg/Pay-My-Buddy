@@ -5,7 +5,6 @@ import com.julien.paymybuddy.dto.SecuredPostUserDTO;
 import com.julien.paymybuddy.exception.UserAlreadyExistsException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.service.UserService;
-import jakarta.validation.Valid;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<SecuredGetUserDTO> register(@Valid @RequestBody SecuredPostUserDTO securedPostUserDTO) {
+    public ResponseEntity<SecuredGetUserDTO> register(@RequestBody SecuredPostUserDTO securedPostUserDTO) {
         try {
             SecuredGetUserDTO user = userService.createUser(securedPostUserDTO);
             logger.info("Successfully created new user.");
@@ -74,7 +73,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<SecuredGetUserDTO> updateUser(@PathVariable long id, @Valid @RequestBody SecuredPostUserDTO securedPostUserDTO) {
+    public ResponseEntity<SecuredGetUserDTO> updateUser(@PathVariable long id, @RequestBody SecuredPostUserDTO securedPostUserDTO) {
         try {
             SecuredGetUserDTO securedGetUserDTO = userService.updateUser(id, securedPostUserDTO);
             logger.info("Successfully updated user with id {}", id);
