@@ -10,12 +10,12 @@ interface SpinnerProps {
 
 const Spinner: React.FC<SpinnerProps> = ({ amount, setAmount }) => {
 
-    const increment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const increment = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setAmount(prevAmount => prevAmount + 1);
     };
 
-    const decrement = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const decrement = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (amount > 0) {
             setAmount(prevAmount => prevAmount - 1);
