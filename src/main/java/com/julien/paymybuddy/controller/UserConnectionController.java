@@ -6,6 +6,7 @@ import com.julien.paymybuddy.exception.ConnectionAlreadyExistException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.service.UserConnectionService;
 import jakarta.servlet.http.HttpSession;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -73,8 +74,9 @@ public class UserConnectionController {
     }
 
     @PostMapping("/add-connection")
-    public ResponseEntity<UserConnectionDTO> addUserConnection(@RequestBody String userToConnectMail, HttpSession session) {
+    public ResponseEntity<UserConnectionDTO> addUserConnection(@RequestBody String payload, HttpSession session) {
         UserEntity currentUser = (UserEntity) session.getAttribute("user");
+        JSONObject payloadObj = new JSONObject(payload);
 
         if (currentUser == null) {
             logger.error("User not found on session");
@@ -82,7 +84,7 @@ public class UserConnectionController {
         }
 
         try {
-            UserConnectionDTO userConnectionDTO = userConnectionService.addConnection(currentUser.getUserId(), userToConnectMail);
+            UserConnectionDTO userConnectionDTO = userConnectionService.addConnection(currentUser.getUserId(), payloadObj.getString("email"));
             logger.debug("Connection {} added", currentUser.getUserId());
             return ResponseEntity.ok(userConnectionDTO);
         } catch (ConnectionAlreadyExistException e) {
