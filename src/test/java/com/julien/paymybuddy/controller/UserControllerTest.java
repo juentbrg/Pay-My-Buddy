@@ -6,6 +6,7 @@ import com.julien.paymybuddy.entity.UserEntity;
 import com.julien.paymybuddy.exception.UserAlreadyExistsException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
@@ -33,6 +34,9 @@ public class UserControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private HttpSession session;
 
     @BeforeEach
     public void setUp(){
@@ -168,16 +172,28 @@ public class UserControllerTest {
         SecuredPostUserDTO securedPostUserDTO = new SecuredPostUserDTO();
         securedPostUserDTO.setEmail("john.doe@gmail.com");
 
-        SecuredGetUserDTO securedGetUserDTO = new SecuredGetUserDTO();
-        securedGetUserDTO.setUsername("username");
-        securedGetUserDTO.setEmail("john.doe@gmail.com");
+        UserEntity userJohn = new UserEntity();
+        userJohn.setUserId(1);
+        userJohn.setUsername("john");
+        userJohn.setEmail("john.doe@gmail.com");
+        userJohn.setPassword("password");
 
-        when(userService.updateUser(1, securedPostUserDTO)).thenReturn(securedGetUserDTO);
+        when(session.getAttribute("user")).thenReturn(userJohn);
+        when(userService.updateUser(1, securedPostUserDTO)).thenReturn(new SecuredGetUserDTO(userJohn));
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(1, securedPostUserDTO);
+        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(securedPostUserDTO, session);
 
         assertNotNull(result.getBody());
         assertEquals(result.getBody().getEmail(), securedPostUserDTO.getEmail());
+    }
+
+    @Test
+    public void updateUserWithNoCurrentUser() {
+        when(session.getAttribute("user")).thenReturn(null);
+
+        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(any(), session);
+
+        assertEquals(result.getStatusCode().value(), 401);
     }
 
     @Test
@@ -185,9 +201,16 @@ public class UserControllerTest {
         SecuredPostUserDTO securedPostUserDTO = new SecuredPostUserDTO();
         securedPostUserDTO.setEmail("john.doe@gmail.com");
 
+        UserEntity userJohn = new UserEntity();
+        userJohn.setUserId(1);
+        userJohn.setUsername("john");
+        userJohn.setEmail("john.doe@gmail.com");
+        userJohn.setPassword("password");
+
+        when(session.getAttribute("user")).thenReturn(userJohn);
         when(userService.updateUser(1, securedPostUserDTO)).thenThrow(new UserNotFoundException());
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(1, securedPostUserDTO);
+        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(securedPostUserDTO, session);
 
         assertNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -198,9 +221,16 @@ public class UserControllerTest {
         SecuredPostUserDTO securedPostUserDTO = new SecuredPostUserDTO();
         securedPostUserDTO.setEmail("john.doe@gmail.com");
 
+        UserEntity userJohn = new UserEntity();
+        userJohn.setUserId(1);
+        userJohn.setUsername("john");
+        userJohn.setEmail("john.doe@gmail.com");
+        userJohn.setPassword("password");
+
+        when(session.getAttribute("user")).thenReturn(userJohn);
         when(userService.updateUser(1, securedPostUserDTO)).thenThrow(new UserAlreadyExistsException("Email already taken."));
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(1, securedPostUserDTO);
+        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(securedPostUserDTO, session);
 
         assertNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.CONFLICT);
@@ -211,9 +241,16 @@ public class UserControllerTest {
         SecuredPostUserDTO securedPostUserDTO = new SecuredPostUserDTO();
         securedPostUserDTO.setEmail("john.doe@gmail.com");
 
+        UserEntity userJohn = new UserEntity();
+        userJohn.setUserId(1);
+        userJohn.setUsername("john");
+        userJohn.setEmail("john.doe@gmail.com");
+        userJohn.setPassword("password");
+
+        when(session.getAttribute("user")).thenReturn(userJohn);
         when(userService.updateUser(1, securedPostUserDTO)).thenThrow(new RuntimeException());
 
-        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(1, securedPostUserDTO);
+        ResponseEntity<SecuredGetUserDTO> result = userController.updateUser(securedPostUserDTO, session);
 
         assertNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);

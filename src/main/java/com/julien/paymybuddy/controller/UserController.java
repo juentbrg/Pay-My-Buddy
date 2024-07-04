@@ -2,9 +2,11 @@ package com.julien.paymybuddy.controller;
 
 import com.julien.paymybuddy.dto.SecuredGetUserDTO;
 import com.julien.paymybuddy.dto.SecuredPostUserDTO;
+import com.julien.paymybuddy.entity.UserEntity;
 import com.julien.paymybuddy.exception.UserAlreadyExistsException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +74,18 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<SecuredGetUserDTO> updateUser(@PathVariable long id, @RequestBody SecuredPostUserDTO securedPostUserDTO) {
+    @PutMapping("/update")
+    public ResponseEntity<SecuredGetUserDTO> updateUser(@RequestBody SecuredPostUserDTO securedPostUserDTO, HttpSession session) {
+        UserEntity currentUser = (UserEntity) session.getAttribute("user");
+
+        if (null == currentUser) {
+            logger.error("Current user not found.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         try {
-            SecuredGetUserDTO securedGetUserDTO = userService.updateUser(id, securedPostUserDTO);
-            logger.info("Successfully updated user with id {}", id);
+            SecuredGetUserDTO securedGetUserDTO = userService.updateUser(currentUser.getUserId(), securedPostUserDTO);
+            logger.info("Successfully updated user with id {}", currentUser.getUserId());
             return ResponseEntity.ok(securedGetUserDTO);
         } catch (UserNotFoundException e) {
             logger.error("Update error: no user found.");

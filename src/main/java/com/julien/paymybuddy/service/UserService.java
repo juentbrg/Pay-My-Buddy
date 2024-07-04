@@ -6,6 +6,7 @@ import com.julien.paymybuddy.entity.UserEntity;
 import com.julien.paymybuddy.exception.UserAlreadyExistsException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,21 +70,21 @@ public class UserService {
         Optional<UserEntity> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
-            if (securedPostUserDTO.getUsername() != null) {
+            if (StringUtils.isNotBlank(securedPostUserDTO.getUsername())) {
                 Optional<UserEntity> usernameExists = userRepository.findByUsername(securedPostUserDTO.getUsername());
                 if (usernameExists.isPresent()) {
                     throw new UserAlreadyExistsException("Username already taken.");
                 }
                 user.setUsername(securedPostUserDTO.getUsername());
             }
-            if(securedPostUserDTO.getEmail() != null) {
+            if(StringUtils.isNotBlank(securedPostUserDTO.getEmail())) {
                 Optional<UserEntity> emailExists = userRepository.findByEmail(securedPostUserDTO.getEmail());
                 if (emailExists.isPresent()) {
                     throw new UserAlreadyExistsException("Email already taken.");
                 }
                 user.setEmail(securedPostUserDTO.getEmail());
             }
-            if(securedPostUserDTO.getPassword() != null) {
+            if(StringUtils.isNotBlank(securedPostUserDTO.getPassword())) {
                 String hashedPassword = passwordEncoder.encode(securedPostUserDTO.getPassword());
                 user.setPassword(hashedPassword);
             }
