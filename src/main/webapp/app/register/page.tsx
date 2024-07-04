@@ -19,6 +19,12 @@ const Register = () => {
                 email,
                 password
             })
+
+            setUsername("");
+            setEmail("");
+            setPassword("");
+
+            await router.push("/login")
         } catch (error) {
             console.error(error)
         }

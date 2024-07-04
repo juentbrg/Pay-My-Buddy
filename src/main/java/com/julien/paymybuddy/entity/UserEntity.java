@@ -9,7 +9,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "userId")
-@ToString(exclude = {"sentTransactions", "receivedTransactions", "connectionsInitiated", "connectionsReceived"})
+@ToString(exclude = {"sentTransactions", "receivedTransactions", "connectionsInitiated"})
 @Entity
 @Table(name="User")
 public class UserEntity {
@@ -36,7 +36,4 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL)
     private Set<UserConnectionEntity> connectionsInitiated;
-
-    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
-    private Set<UserConnectionEntity> connectionsReceived;
 }

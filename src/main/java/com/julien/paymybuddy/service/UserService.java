@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +27,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<SecuredGetUserDTO> findAllUsers() {
         List<UserEntity> userList = userRepository.findAll();
-        List<SecuredGetUserDTO> securedGetUserDTOList = new ArrayList<>();
 
-        for (UserEntity user : userList){
-            SecuredGetUserDTO securedGetUserDTO = new SecuredGetUserDTO(user);
-            securedGetUserDTOList.add(securedGetUserDTO);
-        }
-        return securedGetUserDTOList;
+        return userList.stream()
+                .map(SecuredGetUserDTO::new)
+                .toList();
     }
     
     @Transactional(readOnly = true)
