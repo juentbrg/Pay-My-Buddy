@@ -24,7 +24,7 @@ public class CustomSessionFilter extends OncePerRequestFilter {
         HttpSession session = request.getSession(false);
         if (session != null) {
             UserEntity user = (UserEntity) session.getAttribute("user");
-            if (user != null) {
+            if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(user, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

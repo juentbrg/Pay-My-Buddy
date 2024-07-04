@@ -35,7 +35,7 @@ public class AuthController {
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                HttpSession session = request.getSession(true);
+                HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 logger.info("User " + user.getEmail() + " logged in. Session ID: " + session.getId());
                 return ResponseEntity.ok().body(new JSONObject().put("message", "User successfully logged in"));
@@ -49,11 +49,11 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(false);
         if (session != null) {
             session.removeAttribute("user");
-            session.invalidate();
             logger.info("Invalidating session ID: " + session.getId());
+            session.invalidate();
             return ResponseEntity.ok().body(new JSONObject().put("message", "Logout successful"));
         } else {
             logger.error("No session to invalidate.");
