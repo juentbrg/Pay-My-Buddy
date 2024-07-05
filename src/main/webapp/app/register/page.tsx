@@ -9,24 +9,34 @@ const Register = () => {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("")
     const router = useRouter();
 
     const handleSignIn = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = axios.post("http://localhost:8080/api/user/register", {
+            const response = await axios.post("http://localhost:8080/api/user/register", {
                 username,
                 email,
                 password
-            })
+            });
 
-            setUsername("");
-            setEmail("");
-            setPassword("");
+            if (response.status === 200) {
+                setUsername("");
+                setEmail("");
+                setPassword("");
 
-            await router.push("/login")
+                router.push("/login")
+            }
+
         } catch (error) {
-            console.error(error)
+            if (axios.isAxiosError(error) && error.response) {
+                if (error.response.status === 409) {
+                    setMessage("Nom d'utilisateur ou email déjà pris");
+                }
+            } else {
+                console.error(error);
+            }
         }
     }
 
@@ -69,6 +79,7 @@ const Register = () => {
                     <button className={"w-[205px] h-[64px] bg-[#207FEE] rounded-lg text-white text-lg font-bold mt-8 transition-bg duration-200 ease-in-out hover:bg-[#4192f1]"}
                             type={"submit"}>S'inscrire
                     </button>
+                    {message && <p className={"text-red-500 mt-4"}>{message}</p>}
                 </form>
             </section>
         </main>

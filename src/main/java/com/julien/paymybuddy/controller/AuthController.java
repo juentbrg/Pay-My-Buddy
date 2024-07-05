@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,29 +34,37 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         Optional<UserEntity> userOpt = userRepository.findByEmail(loginRequest.getEmail());
+        Map<String, String> response = new HashMap<>();
+
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 logger.info("User " + user.getEmail() + " logged in. Session ID: " + session.getId());
-                return ResponseEntity.ok().body(new JSONObject().put("message", "User successfully logged in"));
+                response.put("message", "User successfully logged in.");
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(401).body(new JSONObject().put("message", "Invalid password."));
+                response.put("message", "Invalid password.");
+                return ResponseEntity.status(401).body(response);
             }
         } else {
-            return ResponseEntity.status(401).body(new JSONObject().put("message", "Unrecognized email."));
+            response.put("message", "Unrecognized email");
+            return ResponseEntity.status(401).body(response);
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
+        Map<String, String> response = new HashMap<>();
+
         if (session != null) {
             session.removeAttribute("user");
             logger.info("Invalidating session ID: " + session.getId());
             session.invalidate();
-            return ResponseEntity.ok().body(new JSONObject().put("message", "Logout successful"));
+            response.put("message", "Logout successful");
+            return ResponseEntity.ok(response);
         } else {
             logger.error("No session to invalidate.");
             return ResponseEntity.notFound().build();
@@ -66,10 +76,10 @@ public class AuthController {
         UserEntity user = (UserEntity) session.getAttribute("user");
         if (null != user) {
             logger.info("User " + user.getEmail() + " logged in. Session ID: " + session.getId());
-            return ResponseEntity.ok().body(new JSONObject().put("message", "Session active for user: " + user.getUsername()));
+            return ResponseEntity.ok().build();
         } else {
             logger.info("No user logged in.");
-            return ResponseEntity.status(401).body("No active session");
+            return ResponseEntity.status(401).build();
         }
     }
 }
