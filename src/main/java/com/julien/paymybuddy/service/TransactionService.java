@@ -9,6 +9,7 @@ import com.julien.paymybuddy.repository.TransactionRepository;
 import com.julien.paymybuddy.repository.UserConnectionRepository;
 import com.julien.paymybuddy.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class TransactionService {
         }
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createTransaction(UserEntity currentUser, TransactionDTO transactionDTO) {
         Optional<UserEntity> receiverOpt = userRepository.findByUsername(transactionDTO.getRelationName());
 
