@@ -31,17 +31,21 @@ public class TransactionController {
         UserEntity currentUser = (UserEntity) session.getAttribute("user");
 
         if (currentUser == null) {
+            logger.error("No current user.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
             List<TransactionDTO> transactionsList = transactionService.findAllTransactionsByUserId(currentUser.getUserId());
-            if (!transactionsList.isEmpty()) {
+            if (null != transactionsList) {
+                logger.info("Found {} transactions.", transactionsList.size());
                 return ResponseEntity.ok(transactionsList);
             } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+                logger.error("No transactions found.");
+                return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
+            logger.error("Unknown error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -51,17 +55,22 @@ public class TransactionController {
         UserEntity currentUser = (UserEntity) session.getAttribute("user");
 
         if (currentUser == null) {
+            logger.error("No current user.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
             transactionService.createTransaction(currentUser, transactionDTO);
+            logger.info("Transaction successfully created.");
             return ResponseEntity.ok().build();
         } catch (UserNotFoundException e) {
+            logger.error("User not found: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         } catch (UnauthorizedRecipientException e) {
+            logger.error("Unauthorized recipient: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
+            logger.error("Unknown error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

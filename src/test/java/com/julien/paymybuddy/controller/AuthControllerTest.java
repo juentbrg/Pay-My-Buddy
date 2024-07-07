@@ -42,7 +42,7 @@ public class AuthControllerTest {
     }
 
     @AfterAll
-    public static void close() throws Exception {
+    public static void tearDown() throws Exception {
         if (null != mocks){
             mocks.close();
         }
@@ -59,8 +59,8 @@ public class AuthControllerTest {
         LoginRequest loginRequest = new LoginRequest("john.doe@gmail.com", "password");
 
         when(userRepository.findByEmail("john.doe@gmail.com")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("$2y$10$JJ2Pmluh0vOtzWEbJYLtTeut12Z7XIqS4Md.6DbO9ZVV9yP54pHPS", "password")).thenReturn(true);
-        when(httpServletRequest.getSession(true)).thenReturn(httpSession);
+        when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
+        when(httpServletRequest.getSession()).thenReturn(httpSession);
 
         ResponseEntity<?> result = authController.login(loginRequest, httpServletRequest);
 
@@ -78,7 +78,7 @@ public class AuthControllerTest {
         LoginRequest loginRequest = new LoginRequest("john.doe@gmail.com", "notOkPassword");
 
         when(userRepository.findByEmail("john.doe@gmail.com")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("$2y$10$JJ2Pmluh0vOtzWEbJYLtTeut12Z7XIqS4Md.6DbO9ZVV9yP54pHPS", "notOkPassword")).thenReturn(false);
+        when(passwordEncoder.matches("notOkPassword", user.getPassword())).thenReturn(false);
 
         ResponseEntity<?> result = authController.login(loginRequest, httpServletRequest);
 
@@ -100,7 +100,7 @@ public class AuthControllerTest {
 
     @Test
     public void testLogoutSuccess() {
-        when(httpServletRequest.getSession(true)).thenReturn(httpSession);
+        when(httpServletRequest.getSession(false)).thenReturn(httpSession);
 
         ResponseEntity<?> result = authController.logout(httpServletRequest);
 
@@ -111,7 +111,7 @@ public class AuthControllerTest {
 
     @Test
     public void testLogoutNoSession() {
-        when(httpServletRequest.getSession(true)).thenReturn(null);
+        when(httpServletRequest.getSession(false)).thenReturn(null);
 
         ResponseEntity<?> result = authController.logout(httpServletRequest);
 

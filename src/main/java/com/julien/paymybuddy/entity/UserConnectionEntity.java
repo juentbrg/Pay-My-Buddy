@@ -10,6 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "connectionId")
 @ToString(exclude = {"user1", "user2"})
+@Generated
 @Entity
 @Table(name = "UserConnection")
 public class UserConnectionEntity {

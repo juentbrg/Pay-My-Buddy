@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @ToString
+@Generated
 public class SecuredPostUserDTO {
     private String username;
     private String email;

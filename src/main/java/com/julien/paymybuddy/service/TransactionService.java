@@ -30,9 +30,13 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<TransactionDTO> findAllTransactionsByUserId(long id) {
         List<TransactionEntity> transactionList = transactionRepository.findAllByUserID(id);
-        return transactionList.stream()
-                .map(TransactionDTO::new)
-                .toList();
+        if (transactionList.isEmpty()) {
+            return null;
+        } else {
+            return transactionList.stream()
+                    .map(TransactionDTO::new)
+                    .toList();
+        }
     }
 
     @Transactional

@@ -7,8 +7,9 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Generated
 public class TransactionDTO {
     private String relationName;
     private String description;

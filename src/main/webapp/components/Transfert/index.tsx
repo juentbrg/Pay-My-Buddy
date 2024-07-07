@@ -4,33 +4,52 @@ import React, {useState, useEffect} from "react";
 import Spinner from "@/components/Spinner";
 import axios from "axios";
 
-const Transfert = () => {
+interface TransfertProps {
+    onTransactionCreated: () => void;
+}
+
+const Transfert: React.FC<TransfertProps> = ({ onTransactionCreated }) => {
     const [relation, setRelation] = useState("");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState(0);
     const [connections, setConnections] = useState([""]);
 
     const handleGetRelationsUsernames = async () => {
-        const response = await axios.get("http://localhost:8080/api/connection/get-connection-name", {withCredentials: true})
+        try {
+            const response = await axios.get("http://localhost:8080/api/connection/get-connection-name", {withCredentials: true})
 
-        if (response.status === 200) {
-            setConnections(response.data)
+            if (response.status === 200) {
+                setConnections(response.data)
+            }
+        } catch (error) {
+            console.error("Error retrieving usernames: ", error)
         }
     }
 
     const handleCreateTransaction = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await axios.post("http://localhost:8080/api/transaction/create", {
-            relationName:relation,
-            description,
-            amount
-        }, {
-            withCredentials: true
-        })
+        try {
+            const response = await axios.post("http://localhost:8080/api/transaction/create", {
+                relationName:relation,
+                description,
+                amount
+            }, {
+                withCredentials: true
+            })
+
+            if (response.status == 200) {
+                onTransactionCreated();
+                setDescription("");
+                setAmount(0);
+                setRelation("");
+            }
+        } catch (error) {
+            console.error("Error creating transaction: ", error)
+        }
     }
 
     useEffect(() => {
-        handleGetRelationsUsernames();
+        handleGetRelationsUsernames()
     }, []);
 
     return(

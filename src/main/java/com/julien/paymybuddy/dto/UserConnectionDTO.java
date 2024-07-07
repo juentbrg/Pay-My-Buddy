@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Generated
 public class UserConnectionDTO {
     private SecuredGetUserDTO user1;
     private SecuredGetUserDTO user2;

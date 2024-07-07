@@ -1,8 +1,6 @@
 "use client"
 
 import Transaction from "@/components/Transaction";
-import axios from "axios";
-import {useEffect, useState} from "react";
 
 interface TransactionObj {
     relationName: string
@@ -10,21 +8,12 @@ interface TransactionObj {
     amount: number
 }
 
-const TransactionContainer = () => {
-    const [transactions, setTransactions] = useState<TransactionObj[]>([])
+interface TransactionContainerProps {
+    transactions: TransactionObj[];
+}
 
-    const handleGetTransactions = async () => {
-        const response = await axios.get("http://localhost:8080/api/transaction/find-all", {withCredentials: true})
 
-        if (response.status === 200) {
-            setTransactions(response.data)
-        }
-    }
-
-    useEffect(() => {
-        handleGetTransactions();
-    }, []);
-
+const TransactionContainer: React.FC<TransactionContainerProps> = ({ transactions }) => {
     return(
         <section className={"flex justify-center"}>
             <div className={"w-[1300px] h-[426px] border-[1px] border-[#E0E0E0] rounded-lg mt-20 p-4"}>

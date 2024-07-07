@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "transactionId")
 @ToString(exclude = {"sender", "receiver"})
+@Generated
 @Entity
 @Table(name = "Transaction")
 public class TransactionEntity {

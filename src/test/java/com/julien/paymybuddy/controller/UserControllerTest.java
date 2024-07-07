@@ -44,7 +44,7 @@ public class UserControllerTest {
     }
 
     @AfterAll
-    public static void close() throws Exception {
+    public static void tearDown() throws Exception {
         if (null != mocks){
             mocks.close();
         }

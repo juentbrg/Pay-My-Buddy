@@ -7,6 +7,8 @@ import com.julien.paymybuddy.exception.ConnectionAlreadyExistException;
 import com.julien.paymybuddy.exception.UserNotFoundException;
 import com.julien.paymybuddy.service.UserConnectionService;
 import jakarta.servlet.http.HttpSession;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -176,7 +178,7 @@ public class UserConnectionControllerTest {
     }
 
     @Test
-    public void addUserConnectionOkTest() {
+    public void addUserConnectionOkTest() throws JSONException {
         UserEntity userJohn = new UserEntity();
         userJohn.setUserId(1);
         userJohn.setUsername("John");
@@ -197,22 +199,25 @@ public class UserConnectionControllerTest {
         when(session.getAttribute("user")).thenReturn(userJohn);
         when(userConnectionService.addConnection(userJohn.getUserId(), userJane.getEmail())).thenReturn(new UserConnectionDTO(userConnection));
 
-        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection("jane.doe@mail.com", session);
+        JSONObject payload = new JSONObject().put("email", "jane.doe@mail.com");
+
+        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection(payload.toString(), session);
 
         assertEquals(result.getStatusCode().value(), 200);
     }
 
     @Test
-    public void addUserConnectionUnauthorizedTest() {
+    public void addUserConnectionUnauthorizedTest() throws JSONException {
         when(session.getAttribute("user")).thenReturn(null);
 
-        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection("jane.doe@mail.com", session);
+        JSONObject payload = new JSONObject().put("email", "jane.doe@mail.com");
+        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection(payload.toString(), session);
 
         assertEquals(result.getStatusCode().value(), 401);
     }
 
     @Test
-    public void addUserConnectionWithConnectionAlreadyExistTest() {
+    public void addUserConnectionWithConnectionAlreadyExistTest() throws JSONException {
         UserEntity userJohn = new UserEntity();
         userJohn.setUserId(1);
         userJohn.setUsername("John");
@@ -222,13 +227,14 @@ public class UserConnectionControllerTest {
         when(session.getAttribute("user")).thenReturn(userJohn);
         when(userConnectionService.addConnection(userJohn.getUserId(), "jane.doe@mail.com")).thenThrow(ConnectionAlreadyExistException.class);
 
-        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection("jane.doe@mail.com", session);
+        JSONObject payload = new JSONObject().put("email", "jane.doe@mail.com");
+        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection(payload.toString(), session);
 
         assertEquals(result.getStatusCode().value(), 409);
     }
 
     @Test
-    public void addUserConnectionUserNotFoundTest() {
+    public void addUserConnectionUserNotFoundTest() throws JSONException {
         UserEntity userJohn = new UserEntity();
         userJohn.setUserId(1);
         userJohn.setUsername("John");
@@ -238,13 +244,14 @@ public class UserConnectionControllerTest {
         when(session.getAttribute("user")).thenReturn(userJohn);
         when(userConnectionService.addConnection(userJohn.getUserId(), "jane.doe@mail.com")).thenThrow(UserNotFoundException.class);
 
-        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection("jane.doe@mail.com", session);
+        JSONObject payload = new JSONObject().put("email", "jane.doe@mail.com");
+        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection(payload.toString(), session);
 
         assertEquals(result.getStatusCode().value(), 404);
     }
 
     @Test
-    public void addUserConnectionUnknownErrorTest() {
+    public void addUserConnectionUnknownErrorTest() throws JSONException {
         UserEntity userJohn = new UserEntity();
         userJohn.setUserId(1);
         userJohn.setUsername("John");
@@ -254,7 +261,8 @@ public class UserConnectionControllerTest {
         when(session.getAttribute("user")).thenReturn(userJohn);
         when(userConnectionService.addConnection(userJohn.getUserId(), "jane.doe@mail.com")).thenThrow(RuntimeException.class);
 
-        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection("jane.doe@mail.com", session);
+        JSONObject payload = new JSONObject().put("email", "jane.doe@mail.com");
+        ResponseEntity<UserConnectionDTO> result = userConnectionController.addUserConnection(payload.toString(), session);
 
         assertEquals(result.getStatusCode().value(), 500);
     }

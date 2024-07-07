@@ -5,7 +5,6 @@ import com.julien.paymybuddy.pojo.LoginRequest;
 import com.julien.paymybuddy.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

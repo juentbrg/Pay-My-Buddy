@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Generated
 public class SecuredGetUserDTO {
     private String username;
     private String email;
