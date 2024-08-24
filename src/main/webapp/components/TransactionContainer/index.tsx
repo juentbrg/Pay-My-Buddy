@@ -24,7 +24,7 @@ const TransactionContainer: React.FC<TransactionContainerProps> = ({ transaction
                         <h4 className={"flex ml-[18%] w-[33.33%] font-[600]"}>Description</h4>
                         <h4 className={"flex justify-end w-[33.33%] font-[600]"}>Montant</h4>
                     </div>
-                    {transactions.map((transaction, index) => (
+                    {transactions && transactions.map((transaction, index) => (
                         <Transaction key={index} relation={transaction.relationName} description={transaction.description} amount={transaction.amount} />
                     ))}
                 </div>
